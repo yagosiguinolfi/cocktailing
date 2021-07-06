@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Node } from 'react';
-import api from '../src/services/api';
+import api from '../../services/api';
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -9,17 +9,18 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+// import { Image } from '../../styles';
 import { Searchbar, Card, Button, ActivityIndicator } from 'react-native-paper';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-
 const initialState = {
-  drink: {},
+  drink: {temp:'vazio'},
   searchQuery: '',
   searching: false
 };
 
-function App({navigation}) {
+
+function Menu({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -30,14 +31,16 @@ function App({navigation}) {
   const [searching, setSearching] = useState(false);
 
 
-  // useEffect(() => {
-  // api.get(`search.php?s=${state.searchQuery}`)
-  //     .then(async function (response) {
-  //        setState( {...state, drink: response.data.drinks[0].strDrink})})
-  //        .catch(function (error) {
-  //         console.log('Erro:', error)
-  //       });
-  //   }, []);
+  useEffect(() => {
+    api.get(`random.php`)
+      .then(async function (response) {
+        await setState({ ...state, drink: response.data.drinks[0] }, console.log(state.drink))
+
+      })
+      .catch(function (error) {
+        console.log('Erro:', error)
+      });
+  }, []);
 
 
   function searchByName() {
@@ -58,29 +61,21 @@ function App({navigation}) {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>Cocktailing</Text>
-        </View>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={state.searchQuery}
-          // icon='search-web'
-          iconColor='#550033'
-          onIconPress={searchByName}
-          onEndEditing={searchByName}
-        />
-        <Card style={{ width: '80%', minHeight: 70, }}>
+
+        <Card style={{ width: '80%', minHeight: 70 }}>
           {searching ?
             <ActivityIndicator animating={searching} color={Colors.red800} />
             :
-            <><Text>ID: {state.drink?.idDrink || 'notthing'}</Text>
-              <Text>Name: {state.drink?.strDrink || 'notthing'}</Text></>}
+            <>
+              {console.log('image >> ', state.drink?.strDrinkThumb)}
+              <Image source={{ uri: `${state.drink?.strDrinkThumb}` }} />
+              <Text>Name: {state.drink?.strDrink || 'notthing'}</Text>
+            </>}
         </Card>
-        <Button onPress={()=>navigation.navigate('Categories')}>Categories</Button>
+        <Button onPress={() => navigation.navigate('Categories')}>Categories</Button>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default App;
+export default Menu;
