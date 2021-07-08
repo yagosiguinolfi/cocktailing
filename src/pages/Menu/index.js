@@ -11,12 +11,14 @@ import {
 } from 'react-native';
 // import { Image } from '../../styles';
 import { Searchbar, Card, Button, ActivityIndicator } from 'react-native-paper';
+import menuStyles from './styles';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const initialState = {
-  drink: {temp:'vazio'},
+  drink: { temp: 'vazio' },
   searchQuery: '',
-  searching: false
+  searching: false,
+  sugestions: 8
 };
 
 
@@ -24,6 +26,7 @@ function Menu({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    flex: 1,
   };
   const onChangeSearch = query => setState({ ...state, searchQuery: query });
 
@@ -31,7 +34,18 @@ function Menu({ navigation }) {
   const [searching, setSearching] = useState(false);
 
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   api.get(`random.php`)
+  //     .then(async function (response) {
+  //       await setState({ ...state, drink: response.data.drinks[0] }, console.log(state.drink))
+
+  //     })
+  //     .catch(function (error) {
+  //       console.log('Erro:', error)
+  //     });
+  // }, []);
+
+  function randomize() {
     api.get(`random.php`)
       .then(async function (response) {
         await setState({ ...state, drink: response.data.drinks[0] }, console.log(state.drink))
@@ -40,8 +54,25 @@ function Menu({ navigation }) {
       .catch(function (error) {
         console.log('Erro:', error)
       });
-  }, []);
+  }
 
+  function renderSugestions() {
+    Array.from(Array(8), (e, i) => {
+      randomize();
+      renderCard({ index: e });
+    });
+  }
+
+  function renderCard(index) {
+    randomize();
+    return (
+      <View key={index}>
+        <Image source={{ uri: '../../assets/images/logo.png' }} />
+        {/*<Image source={{ uri: `${state.drink?.strDrinkThumb}` }} />*/}
+        <Text>Name: {state.drink?.strDrink || 'notthing'}</Text>
+      </View>
+    )
+  }
 
   function searchByName() {
     setSearching(true);
@@ -61,17 +92,15 @@ function Menu({ navigation }) {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-
-        <Card style={{ width: '80%', minHeight: 70 }}>
-          {searching ?
-            <ActivityIndicator animating={searching} color={Colors.red800} />
-            :
-            <>
-              {console.log('image >> ', state.drink?.strDrinkThumb)}
-              <Image source={{ uri: `${state.drink?.strDrinkThumb}` }} />
-              <Text>Name: {state.drink?.strDrink || 'notthing'}</Text>
-            </>}
-        </Card>
+        <View style={[menuStyles.view, menuStyles.row, menuStyles.wrap]}>{/*style={{ width: '100%', alignItems: 'center', justifyContent: 'space-around'}}*/}
+          <Card style={[menuStyles.card]}>
+            {searching ?
+              <ActivityIndicator animating={searching} color={Colors.red800} />
+              :
+              { renderCard() }
+            }
+          </Card>
+        </View>
         <Button onPress={() => navigation.navigate('Categories')}>Categories</Button>
       </ScrollView>
     </SafeAreaView>
