@@ -14,10 +14,10 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Menu'>
-        <Stack.Screen name='Menu' component={Menu} />
-        <Stack.Screen name='Categories' component={Categories} />
-        <Stack.Screen name='Drinks' component={Drinks} />
-        <Stack.Screen name='Details' component={Details} />
+        <Stack.Screen name='Menu' component={Menu} params={{}}/>
+        <Stack.Screen name='Categories' component={Categories} params={{}}/>
+        <Stack.Screen name='Drinks' component={Drinks}  params={{}}/>
+        <Stack.Screen name='Details' component={Details}  params={{}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

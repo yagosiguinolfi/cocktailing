@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -13,6 +12,7 @@ import {
 import { Searchbar, Card, Button, ActivityIndicator } from 'react-native-paper';
 import menuStyles from './styles';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Image } from '../../styles';
 
 const initialState = {
   drink: { temp: 'vazio' },
@@ -49,7 +49,6 @@ function Menu({ navigation }) {
     api.get(`random.php`)
       .then(async function (response) {
         await setState({ ...state, drink: response.data.drinks[0] }, console.log(state.drink))
-
       })
       .catch(function (error) {
         console.log('Erro:', error)
@@ -57,18 +56,19 @@ function Menu({ navigation }) {
   }
 
   function renderSugestions() {
-    Array.from(Array(8), (e, i) => {
+    Array.from(Array(2), (e, i) => {
       randomize();
       renderCard({ index: e });
     });
   }
 
-  function renderCard(index) {
-    randomize();
+  function renderCard({ index }) {
+    // randomize();
+    console.log(state.drink?.strDrinkThumb, '/preview')
     return (
       <View key={index}>
-        <Image source={{ uri: '../../assets/images/logo.png' }} />
-        {/*<Image source={{ uri: `${state.drink?.strDrinkThumb}` }} />*/}
+        {/* <Image source={{ uri: '../../assets/images/logo.png' }} /> */}
+        <Image source={{ uri: `${state.drink?.strDrinkThumb}/preview` }} />
         <Text>Name: {state.drink?.strDrink || 'notthing'}</Text>
       </View>
     )
@@ -97,7 +97,9 @@ function Menu({ navigation }) {
             {searching ?
               <ActivityIndicator animating={searching} color={Colors.red800} />
               :
-              { renderCard() }
+              <View>
+                {/* {renderSugestions}                 */}
+              </View>
             }
           </Card>
         </View>
