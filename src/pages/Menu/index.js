@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-// import { Image } from '../../styles';
-import { Searchbar, Card, Button, ActivityIndicator } from 'react-native-paper';
-import menuStyles from './styles';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { Image } from '../../styles';
+import {  Button } from 'react-native-paper';
+import {  SafeAreaView, Container, Image, Title } from '../../styles';
 
 const initialState = {
   drink: { temp: 'vazio' },
@@ -21,14 +10,7 @@ const initialState = {
   sugestions: 8
 };
 
-
 function Menu({ navigation }) {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex: 1,
-  };
-  const onChangeSearch = query => setState({ ...state, searchQuery: query });
 
   const [state, setState] = useState(initialState);
   const [searching, setSearching] = useState(false);
@@ -55,25 +37,6 @@ function Menu({ navigation }) {
       });
   }
 
-  function renderSugestions() {
-    Array.from(Array(2), (e, i) => {
-      randomize();
-      renderCard({ index: e });
-    });
-  }
-
-  function renderCard({ index }) {
-    // randomize();
-    console.log(state.drink?.strDrinkThumb, '/preview')
-    return (
-      <View key={index}>
-        {/* <Image source={{ uri: '../../assets/images/logo.png' }} /> */}
-        <Image source={{ uri: `${state.drink?.strDrinkThumb}/preview` }} />
-        <Text>Name: {state.drink?.strDrink || 'notthing'}</Text>
-      </View>
-    )
-  }
-
   function searchByName() {
     setSearching(true);
     api.get(`search.php?s=${state.searchQuery}`)
@@ -87,24 +50,10 @@ function Menu({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View style={[menuStyles.view, menuStyles.row, menuStyles.wrap]}>{/*style={{ width: '100%', alignItems: 'center', justifyContent: 'space-around'}}*/}
-          <Card style={[menuStyles.card]}>
-            {searching ?
-              <ActivityIndicator animating={searching} color={Colors.red800} />
-              :
-              <View>
-                {/* {renderSugestions}                 */}
-              </View>
-            }
-          </Card>
-        </View>
-        <Button onPress={() => navigation.navigate('Categories')}>Categories</Button>
-      </ScrollView>
+    <SafeAreaView>
+      <Container>
+        <Button onPress={() => navigation.navigate('Categories')}><Title>Categories</Title></Button>
+      </Container>
     </SafeAreaView>
   );
 };

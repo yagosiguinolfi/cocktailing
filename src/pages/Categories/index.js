@@ -35,12 +35,14 @@ function Categories({ navigation }) {
       <Container>
         <Title>Escolha uma categoria de drink:</Title>
         {categories ?
-          <ScrollView style={{width:'100%'}}>
+          <ScrollView style={{ width: '100%' }}>
             <View style={{ paddingTop: 20 }}>
               {categories.map((item, index) =>
                 renderCategory({ item, index })
               )}
-            </View></ScrollView> : <ActivityIndicator animating={searching} color={colors.white}/>}
+            </View>
+          </ScrollView>
+          : <ActivityIndicator animating={searching} color={colors.white} />}
       </Container>
     </SafeAreaView>
   );
